@@ -66,13 +66,12 @@ function CreateDeck() {
                     <label for="descInput" class="form-label">Description:</label>
                     <textArea
                         onChange={changeForm}
-                        value={formState.descInput}
                         class="form-control"
                         id="descInput"
                         name="descInput"
                         required
                         Placeholder="What is this deck generally about?"
-                    ></textArea>
+                    >{formState.descInput}</textArea>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary">Submit</button>

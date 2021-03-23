@@ -21,20 +21,25 @@ function DisplayDeck({deck}) {
         fetchCards();
     }, []);
 
-    return(
-        <div class="card">
-            <h5 class="card-header">{deck.name}: {cards.length} cards</h5>
-            <div class="card-body">
-                <p class="card-text">{deck.description}</p>
+    return(<div>
+        {cards !== undefined ? 
+            <div class="card">
+                <h5 class="card-header">{deck.name}: {cards.length} cards</h5>
+                <div class="card-body">
+                    <p class="card-text">{deck.description}</p>
 
-                <a type="button" href={`/decks/${deck.id}`} class="btn btn-primary">View</a>
+                    <a type="button" href={`/decks/${deck.id}`} class="btn btn-primary">View</a>
 
-                <a type="button" href={`/decks/${deck.id}/study`} class="btn btn-primary">Study</a>
+                    <a type="button" href={`/decks/${deck.id}/study`} class="btn btn-primary">Study</a>
 
-                <a type="button" href={`/decks/${deck.id}/edit`} class="btn btn-primary">Edit</a>
+                    <a type="button" href={`/decks/${deck.id}/edit`} class="btn btn-primary">Edit</a>
                 
-                <button type="button" onClick={deleteHandler} class="btn btn-danger">Delete</button>
+                    <button type="button" onClick={deleteHandler} class="btn btn-danger">Delete</button>
+                </div>
             </div>
+        :
+            <h3>Loading...</h3>
+        }
         </div>);
 };
 

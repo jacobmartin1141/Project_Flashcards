@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     useParams,
+    useHistory,
 } from 'react-router-dom';
 
 import {
@@ -8,13 +9,19 @@ import {
     createCard,
 } from '../utils/api';
 
+import CardForm from "./CardForm";
+
 function CreateCard() {
+    const history = useHistory();
+
     const { deckId, } = useParams();
 
     const initState = {
         deck: {},
-        frontInput: "",
-        backInput: "",
+        card: {
+            front: "",
+            back: "",
+        },
     }
     const [ formState, setFormState ] = useState(initState);
 
@@ -35,16 +42,20 @@ function CreateCard() {
         const name = target.name;
         setFormState({
             ...formState,
-            [name]: newValue,
+            card: {
+                ...formState.card,
+                [name]: newValue,
+            },
         });
     }
 
     const submitHandler = () => {
         const newCard = {
-            front: formState.frontInput,
-            back: formState.backInput,
+            front: formState.card.front,
+            back: formState.card.back,
         }
         createCard(deckId, newCard);
+        history.push(`/decks/${deckId}`)
     }
 
     return(<section>
@@ -56,38 +67,7 @@ function CreateCard() {
             </ol>
         </nav>
         <h3>{formState.deck.name}: Add Card</h3>
-        <form onSubmit={submitHandler}>
-            <fieldset>
-                <div class="mb-3">
-                    <label for="frontInput" class="form-label">Front:</label>
-                    <textArea
-                        onChange={changeForm}
-                        value={formState.frontInput}
-                        class="form-control"
-                        id="frontInput"
-                        name="frontInput"
-                        required
-                        placeholder="Front side of card"
-                    ></textArea>
-                </div>
-                <div class="mb-3">
-                    <label for="backInput" class="form-label">Back:</label>
-                    <textArea
-                        onChange={changeForm}
-                        value={formState.backInput}
-                        class="form-control"
-                        id="backInput"
-                        name="backInput"
-                        required
-                        Placeholder="Back side of card"
-                    ></textArea>
-                </div>
-                <div>
-                    <button class="btn btn-primary" type="submit">Submit</button>
-                    <a class="btn btn-primary" href={`/decks/${deckId}`}>Done</a>
-                </div>
-            </fieldset>
-        </form>
+        <CardForm formState={formState} changeForm={changeForm} deckId={deckId} submitHandler={submitHandler}/>
     </section>)
 }
 

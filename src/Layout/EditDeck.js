@@ -65,13 +65,12 @@ function EditDeck() {
                     <label for="description" class="form-label">Description:</label>
                     <textArea
                         onChange={changeForm}
-                        value={formState.description}
                         class="form-control"
                         id="description"
                         name="description"
                         required
                         Placeholder={formState.description}
-                    ></textArea>
+                    >{formState.description}</textArea>
                 </div>
                 <div>
                     <button class="btn btn-primary" type="submit">Submit</button>

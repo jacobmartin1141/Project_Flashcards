@@ -46,7 +46,7 @@ function Deck() {
     }
     const [state, setState] = useState(initState);
     
-    function generateDisplayCards(cardList) {
+    function generateDisplayCards(cardList = []) {
         return cardList.map((card) => {
             return <DisplayCard deck={state.deck} card={card} cards={state.cards} cardRemoval={cardRemovalHandler} />
         });
@@ -111,10 +111,16 @@ function Deck() {
 
             <button type="button" onClick={deleteDeckHandler} class="btn btn-danger">Delete</button>
 
-            <h3>Cards</h3>
-
-            {state.displayCards ? <div>
-                {state.displayCards}
+            {state.displayCards ? 
+            <div>
+                {state.displayCards.length !== 0 ? 
+                    <div>
+                        <h3>Cards</h3>
+                        {state.displayCards}
+                    </div>
+                :
+                    <h3>No cards created yet!</h3>
+                }
             </div>
             :
             <div>
