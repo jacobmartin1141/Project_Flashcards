@@ -7,18 +7,20 @@ import {
 import { listCards, readDeck, } from "../utils/api/index";
 
 function Study() {
+    const history = useHistory();
     const { deckId } = useParams();
 
     const initState = {
         currentCard: 0,
         flipped: false,
-        cards: [],
-        deck: {},
+        deck: {
+            name: "Loading",
+            id: 420,
+            cards: [],
+        },
     }
 
     const [state, setstate] = useState(initState);
-
-    const history = useHistory();
 
     useEffect(() => {
         async function fetchData() {
@@ -31,7 +33,6 @@ function Study() {
 
         fetchData();
     }, []);
-
 
     const handleFlip = () => {
         setstate({...state, flipped: true,})
@@ -58,8 +59,8 @@ function Study() {
             }
         }
     }
-    return((state.cards && state.deck) ? 
-        <section>
+
+    return(<section>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
@@ -73,44 +74,38 @@ function Study() {
             </nav>
             <div>
                 <h3>Study: {state.deck.name}</h3>
-                {
-                state.cards.length > 2 ?
+                {state.deck.cards.length > 2 ?
                 <div class="card">
-                    <h6 class="card-subtitle text-muted">Card {state.currentCard + 1} of {state.cards.length}</h6>
-                    <div class="card-body">
-                        <p class="card-text">{
-                            state.flipped ? 
-                                state.cards[state.currentCard].back
-                                :
-                                state.cards[state.currentCard].front
-                            }</p>
-
-                        <button
-                            type="button"
-                            onClick={handleFlip}
-                            class="btn btn-primary"
-                            disabled={state.flipped}
-                        >Flip</button>
-
-                        <button
-                            class="btn btn-primary"
-                            disabled={!state.flipped}
-                            onClick={handleShowNext}
-                        >Next</button>
-                    </div>
+                    <h6 class="card-subtitle text-muted">Card {state.currentCard + 1} of {state.deck.cards.length}</h6>
+                        {state.flipped ? 
+                            <div class="card-body">
+                                <p class="card-text">{state.deck.cards[state.currentCard].back}</p>
+                                <button
+                                    class="btn btn-primary"
+                                    onClick={handleShowNext}
+                                >Next</button>
+                            </div>
+                            :
+                            <div class="card-body">
+                                <p class="card-text">{state.deck.cards[state.currentCard].front}</p>
+                                <button
+                                    type="button"
+                                    onClick={handleFlip}
+                                    class="btn btn-primary"
+                                    >Flip</button>
+                            </div>
+                        }
                 </div>
                 :
                 <div>
                     <h3>Not enough cards.</h3>
                     <p>You need at least 3 cards to study.
-                    There are {state.cards.length} cards in this deck.</p>
+                    There are {state.deck.cards.length} cards in this deck.</p>
                     <a href={`/decks/${deckId}/cards/new`} class="btn btn-primary">Add Cards</a>
                 </div>
                 }
             </div>
         </section>
-        :
-        <h3>Loading...</h3>
     )
 }
 

@@ -41,7 +41,6 @@ function Deck() {
 
     const initState = {
         deck: {},
-        cards: [],
         displayCards: [],
     }
     const [state, setState] = useState(initState);
@@ -54,23 +53,20 @@ function Deck() {
 
     useEffect(() => {
         async function fetchData() {
+            const deck = await readDeck(deckId);
             setState({
                 ...state,
-                deck: await readDeck(deckId),
-                cards: await listCards(deckId),
+                deck: deck,
+                displayCards: generateDisplayCards(deck.cards),
             });
+            // setState({
+            //     cards: state.cards,
+            //     deck: state.deck,
+            // });
         }
-
         fetchData();
     }, []);
-
-    useEffect(() => {
-        setState({
-            ...state,
-            displayCards: generateDisplayCards(state.cards),
-        });
-    }, [state.cards]);
-
+    
     const cardRemovalHandler = (allCards, cardForRemoval) => {
         const newCardList = allCards.map((card) => {
             if(card !== cardForRemoval) return card;
@@ -129,7 +125,7 @@ function Deck() {
         </div>
         :
         <div>
-            <h3>Loading...</h3>
+            <h3>Loading...!</h3>
         </div>}
     </section>);
 }

@@ -5,26 +5,18 @@ import {
     deleteDeck,
 } from "../utils/api/index";
 
-function DisplayDeck({deck}) {
-    const [cards, setCards] = useState([]);
-
+function DisplayDeck({deck, cards}) {
+    
     const deleteHandler = () => {
         if(window.confirm("Delete this deck? You will not be able to recover it.")) {
             deleteDeck(deck.id);
         }
     }
 
-    useEffect(() => {
-        async function fetchCards() {
-            setCards(await listCards(deck.id));
-        }
-        fetchCards();
-    }, []);
-
-    return(<div>
-        {cards !== undefined ? 
+    return(<div key={deck.id}>
             <div class="card">
-                <h5 class="card-header">{deck.name}: {cards.length} cards</h5>
+                <h5 class="card-header">{deck.name}</h5>
+                <h6>{deck.cards.length} cards</h6>
                 <div class="card-body">
                     <p class="card-text">{deck.description}</p>
 
@@ -37,40 +29,32 @@ function DisplayDeck({deck}) {
                     <button type="button" onClick={deleteHandler} class="btn btn-danger">Delete</button>
                 </div>
             </div>
-        :
-            <h3>Loading...</h3>
-        }
         </div>);
 };
 
 function Home() {
-    const [state, setState] = useState({});
+    const [state, setState] = useState({cards: []});
 
     useEffect(() => {
         async function fetchDecks() {
-            setState({...state, data: await listDecks()});
-
+            const decks = await listDecks();
+            
+            setState({
+                decks: decks,
+            });
         }
 
         fetchDecks();
     }, []);
 
-    useEffect(() => {
-        if(state.data) {
-            const updatedDecks = state.data.map((deck) => {
-                return <DisplayDeck deck={deck} />;
-            });
-
-            setState({...state, decks: updatedDecks})
-        }
-    }, [state.data])
-
     return (<section>
-        <a type="button" class="btn btn-primary" href="/decks/new">Create Deck</a>
-        {state.decks ?
-            state.decks
+        <a type="button" className="btn btn-primary" href="/decks/new">Create Deck</a>
+        {state.decks !== undefined ?
+            <div name="HERE!">{state.decks.map((deck) => {
+                return <DisplayDeck deck={deck} />;
+            })}</div>
         : 
-            <h3>Loading...</h3>
+            <h6>No decks created!</h6>
         }
         </section>);
 }
